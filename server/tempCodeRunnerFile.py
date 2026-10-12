@@ -1,13 +1,14 @@
-import asyncio
 import socket
 import websockets
 
 
 def get_local_ip():
-    a=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    a.connect(("8.8.8.8", 80))
-    print(a)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.connect(("8.8.8.8", 80))
+    ip = sock.getsockname()[0]
+    sock.close()
+    return ip
 
-ip = a.getsockname()[0]
+
+ip = get_local_ip()
 print(ip)
-get_local_ip()

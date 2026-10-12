@@ -18,3 +18,9 @@ socket.onclose = () => {
 touchpad.addEventListener("touchend", () => {
     socket.send("hello");
 });
+
+// yhan se kudh kra hai 
+let startx = 0;
+let starty=0;
+
+touchpad.addEventListner
