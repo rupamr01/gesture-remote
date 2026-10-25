@@ -1,0 +1,331 @@
+* {
+    box-sizing: border-box;
+    touch-action: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    color-scheme: light;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    --ink: #202a31;
+    --muted: #7d8586;
+    --accent: #b18a52;
+    --paper: #f4f2ed;
+    --line: #e7e3db;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--paper);
+}
+
+#pad {
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    min-height: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 3vh, 28px);
+    padding: clamp(20px, 5vw, 42px) clamp(20px, 6vw, 56px) clamp(18px, 4vh, 34px);
+    color: var(--ink);
+}
+
+.topbar,
+.brand,
+.guide-heading,
+.gesture-item {
+    display: flex;
+    align-items: center;
+}
+
+.topbar {
+    justify-content: space-between;
+    flex: 0 0 auto;
+}
+
+.brand {
+    gap: 12px;
+}
+
+.brand-mark {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid #ddd6c9;
+    border-radius: 13px;
+    color: var(--accent);
+    background: #faf9f6;
+}
+
+.brand-mark svg {
+    width: 21px;
+    height: 21px;
+}
+
+.eyebrow {
+    display: block;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.17em;
+}
+
+h1 {
+    margin: 3px 0 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 23px;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    color: #6d7475;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.055em;
+    white-space: nowrap;
+    transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.status-badge::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+    box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 13%, transparent);
+}
+
+.touch-surface {
+    position: relative;
+    display: grid;
+    flex: 1 1 auto;
+    min-height: 180px;
+    overflow: hidden;
+    place-items: center;
+    border: 1px solid #343d41;
+    border-radius: 24px;
+    background:
+        radial-gradient(ellipse at 50% 42%, rgba(177, 138, 82, 0.11), transparent 48%),
+        linear-gradient(145deg, #293238, #20282d 72%);
+    box-shadow: 0 18px 38px rgba(38, 42, 43, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.touch-surface::before {
+    position: absolute;
+    inset: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    border-radius: 16px;
+    content: "";
+}
+
+.surface-content {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.surface-icon {
+    display: grid;
+    width: 58px;
+    height: 58px;
+    margin-bottom: 22px;
+    place-items: center;
+    border: 1px solid rgba(207, 175, 124, 0.27);
+    border-radius: 18px;
+    color: #d0b27f;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.surface-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.surface-label {
+    color: #d0b27f;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+}
+
+.surface-content p {
+    margin: 9px 0 0;
+    color: #aab1b1;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.surface-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: rgba(208, 178, 127, 0.44);
+}
+
+.corner-top {
+    top: 27px;
+    left: 27px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-top-left-radius: 5px;
+}
+
+.corner-bottom {
+    right: 27px;
+    bottom: 27px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-bottom-right-radius: 5px;
+}
+
+.gesture-guide {
+    flex: 0 0 auto;
+}
+
+.guide-heading {
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.guide-note {
+    color: #969b99;
+    font-size: 10px;
+}
+
+.gesture-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.gesture-item {
+    min-width: 0;
+    gap: 11px;
+    padding: 13px 15px;
+}
+
+.gesture-item:nth-child(odd) {
+    border-right: 1px solid var(--line);
+}
+
+.gesture-item:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+}
+
+.gesture-number {
+    color: var(--accent);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+}
+
+.gesture-item strong,
+.gesture-item small {
+    display: block;
+}
+
+.gesture-item strong {
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.gesture-item small {
+    margin-top: 3px;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-height: 580px) {
+    #pad {
+        gap: 12px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    .touch-surface {
+        min-height: 130px;
+    }
+
+    .surface-icon {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 12px;
+    }
+
+    .surface-icon svg {
+        width: 25px;
+        height: 25px;
+    }
+
+    .gesture-item {
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
+}
+
+@media (max-width: 360px) {
+    #pad {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .gesture-item {
+        gap: 8px;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .guide-note {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 340px) {
+    .status-badge {
+        gap: 6px;
+        padding-right: 8px;
+        padding-left: 8px;
+        font-size: 8px;
+    }
+
+    .guide-note {
+        display: none;
+    }
+
+    .gesture-list {
+        grid-template-columns: 1fr;
+    }
+
+    .gesture-item:nth-child(odd) {
+        border-right: 0;
+    }
+
+    .gesture-item:not(:last-child) {
+        border-bottom: 1px solid var(--line);
+    }
+}

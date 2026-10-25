@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+  * { box-sizing: border-box; touch-action: none; user-select: none; -webkit-user-select: none; }
+  html, body { margin:0; height:100%; background:#000; font-family:sans-serif; }
+  #app { display:flex; flex-direction:column; height:100%; }
+  #screen { width:100%; background:#111; flex:0 0 auto; }
+  #pad { flex:1; background:#1e1e2e; margin:8px; border-radius:14px;
+         border:2px solid #444; display:flex; align-items:center;
+         justify-content:center; color:#666; text-align:center; font-size:13px; }
+  #btns { display:flex; gap:8px; margin:0 8px 8px; }
+  #btns button { flex:1; padding:16px; font-size:16px; border:0;
+                 border-radius:10px; background:#333; color:#fff; }
+  #btns button:active { background:#666; }
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="screen"></canvas>
+  <div id="pad">TRACKPAD</div>
+  <div id="btns">
+    <button id="bl">Left</button>
+    <button id="bm">Mid</button>
+    <button id="br">Right</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("screen");
+const ctx = canvas.getContext("2d");
+const ws = new WebSocket("ws://" + location.hostname + ":8765");
+const send = (o) => ws.readyState === 1 && ws.send(JSON.stringify(o));
+
+ws.onmessage = async (e) => {
+  const bmp = await createImageBitmap(e.data);
+  canvas.width = bmp.width; canvas.height = bmp.height;
+  ctx.drawImage(bmp, 0, 0);
+};
+
+// ================= TRACKPAD =================
+const pad = document.getElementById("pad");
+const SENS = 2.0;           // mouse speed
+const TAP_MS = 200;         // tap max time
+const DTAP_MS = 300;        // double-tap window (tap + drag)
+const HOLD_MS = 600;        // long press = right click
+
+let accDx = 0, accDy = 0, accV = 0, accH = 0, accZoom = 0;
+let lastCx = 0, lastCy = 0, lastDist = 0;
+let startT = 0, moved = 0, maxFingers = 0;
+let lastTapT = 0, dragging = false, holdTimer = null, longPressed = false;
+let swX = 0, swY = 0, swipeFired = false;
+
+function info(ts) {
+  let x = 0, y = 0;
+  for (const t of ts) { x += t.clientX; y += t.clientY; }
+  x /= ts.length; y /= ts.length;
+  let dist = 0;
+  if (ts.length >= 2) dist = Math.hypot(ts[0].clientX - ts[1].clientX, ts[0].clientY - ts[1].clientY);
+  return { x, y, dist };
+}
+
+// batch karke bhejo (WiFi pe flood nahi)
+setInterval(() => {
+  if (accDx || accDy) { send({ type: "rel", dx: accDx * SENS, dy: accDy * SENS }); accDx = accDy = 0; }
+  if (Math.abs(accV) >= 1 || Math.abs(accH) >= 1) {
+    send({ type: "scroll", v: Math.trunc(accV), h: Math.trunc(accH) });
+    accV -= Math.trunc(accV); accH -= Math.trunc(accH);
+  }
+  if (Math.abs(accZoom) >= 1) { send({ type: "zoom", amount: Math.trunc(accZoom) }); accZoom -= Math.trunc(accZoom); }
+}, 16);
+
+pad.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  const ts = e.targetTouches, n = ts.length, c = info(ts);
+  lastCx = c.x; lastCy = c.y; lastDist = c.dist;
+  clearTimeout(holdTimer);
+
+  if (n === 1) {
+    startT = performance.now(); moved = 0; maxFingers = 1; longPressed = false;
+    if (startT - lastTapT < DTAP_MS) {            // tap + hold/drag
+      dragging = true;
+      send({ type: "down", button: "left" });
+    } else {
+      holdTimer = setTimeout(() => {              // long press = right click
+        if (moved < 10) { send({ type: "click", button: "right" }); longPressed = true; }
+      }, HOLD_MS);
+    }
+  } else {
+    maxFingers = Math.max(maxFingers, n);
+    swX = swY = 0; swipeFired = false;
+  }
+}, { passive: false });
+
+pad.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  const ts = e.targetTouches, n = ts.length, c = info(ts);
+  const dx = c.x - lastCx, dy = c.y - lastCy;
+  lastCx = c.x; lastCy = c.y;
+  moved += Math.abs(dx) + Math.abs(dy);
+
+  if (n === 1) {                                   // move / drag
+    accDx += dx; accDy += dy;
+  } else if (n === 2) {
+    const dd = c.dist - lastDist; lastDist = c.dist;
+    if (Math.abs(dd) > Math.abs(dy) && Math.abs(dd) > Math.abs(dx)) {
+      accZoom += dd / 15;                          // pinch = zoom
+    } else {
+      accV += -dy / 10;                            // scroll
+      accH += -dx / 10;
+    }
+  } else if (n >= 3 && !swipeFired) {              // 3-finger swipe
+    swX += dx; swY += dy;
+    if (Math.abs(swX) > 80 || Math.abs(swY) > 80) {
+      swipeFired = true;
+      const name = Math.abs(swX) > Math.abs(swY)
+        ? (swX > 0 ? "swipe_right" : "swipe_left")
+        : (swY > 0 ? "swipe_down" : "swipe_up");
+      send({ type: "gesture", name });
+    }
+  }
+}, { passive: false });
+
+pad.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  if (e.targetTouches.length > 0) return;          // abhi ungli baaki hai
+  clearTimeout(holdTimer);
+
+  if (dragging) {                                  // drag / double-click khatam
+    send({ type: "up", button: "left" });
+    dragging = false; lastTapT = 0;
+    return;
+  }
+  const quick = performance.now() - startT < TAP_MS && moved < 10;
+  if (quick && !longPressed) {
+    if (maxFingers === 1) { send({ type: "click", button: "left" }); lastTapT = performance.now(); }
+    else if (maxFingers === 2) send({ type: "click", button: "right" });
+    else if (maxFingers === 3) send({ type: "click", button: "middle" });
+  }
+}, { passive: false });
+
+// ================= BUTTONS (hold = drag) =================
+function bindBtn(id, button) {
+  const el = document.getElementById(id);
+  el.addEventListener("touchstart", (e) => { e.preventDefault(); send({ type: "down", button }); }, { passive: false });
+  el.addEventListener("touchend",   (e) => { e.preventDefault(); send({ type: "up", button }); }, { passive: false });
+}
+bindBtn("bl", "left"); bindBtn("bm", "middle"); bindBtn("br", "right");
+</script>
+</body>
+</html>
