@@ -6,6 +6,8 @@ Turn your phone into a low-latency wireless touchpad, scroll wheel, and mouse fo
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-4B5563)
 ![Build](https://img.shields.io/badge/build-none-22C55E)
 
+> New to the code or preparing for a viva? Read [PROJECT_GUIDE.md](PROJECT_GUIDE.md) for the full architecture, the 3-person work split, and the study checklist.
+
 ## Features
 
 - **Soft UI touchpad** with light and dark themes. The choice is saved on the phone.
