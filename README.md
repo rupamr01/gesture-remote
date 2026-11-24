@@ -7,6 +7,8 @@ Turn your phone into a low-latency wireless touchpad, scroll wheel, and mouse fo
 ![Build](https://img.shields.io/badge/build-none-22C55E)
 
 > New to the code or preparing for a viva? Read [PROJECT_GUIDE.md](PROJECT_GUIDE.md) for the full architecture, the 3-person work split, and the study checklist.
+>
+> Working with four builders? See [WORK_SPLIT_4_BUILDERS.md](WORK_SPLIT_4_BUILDERS.md) for the four-way ownership split.
 
 ## Features
 
