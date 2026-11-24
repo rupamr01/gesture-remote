@@ -1,331 +1,1018 @@
-* {
+/* ---------------------------------------------------------------------------
+   Gesture Remote â€” Soft UI theme.
+
+   One self-contained stylesheet for the layout and both themes:
+   light is the default ("normal"), and [data-theme="dark"] on <html> switches
+   the same surfaces to the dark palette. Large blur shadows are static and
+   the only moving highlight is transform/opacity based, so the pad stays
+   smooth while the screen stream is running.
+--------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
     touch-action: none;
     user-select: none;
+    -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 :root {
     color-scheme: light;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text",
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    --ink: #202a31;
-    --muted: #7d8586;
-    --accent: #b18a52;
-    --paper: #f4f2ed;
-    --line: #e7e3db;
+    -webkit-text-size-adjust: 100%;
+
+    --control: 34px;
+
+    --bg: #e9edf4;
+    --bg-sheen: #f8fafd;
+    --bg-shade: #dce2ec;
+    --surface: #e9edf4;
+    --pad-surface: #e9edf4;
+    --pad-surface-deep: #e4e8f0;
+
+    --ink: #2c3240;
+    --ink-soft: #434b5c;
+    --muted: #5f6879;
+    --faint: #788193;
+    --icon-ink: #5a6380;
+
+    --accent: #5b6cff;
+    --accent-soft: #dfe3ff;
+    --green: #2f9e5f;
+    --green-ink: #287a4c;
+    --green-ring: rgba(47, 158, 95, 0.16);
+    --amber: #c98a2e;
+    --amber-ink: #946a24;
+    --amber-ring: rgba(201, 138, 46, 0.16);
+    --idle-dot: #b6b2a9;
+    --idle-ring: rgba(182, 178, 169, 0.16);
+    --dot-ring-size: 3px;
+
+    --shadow-light: rgba(255, 255, 255, 0.95);
+    --shadow-dark: rgba(159, 168, 184, 0.5);
+    --raised: -7px -7px 16px var(--shadow-light), 8px 8px 18px var(--shadow-dark);
+    --raised-sm: -4px -4px 9px var(--shadow-light),
+        5px 5px 11px rgba(159, 168, 184, 0.45);
+    --inset-sm: inset -3px -3px 7px rgba(255, 255, 255, 0.9),
+        inset 3px 3px 7px rgba(159, 168, 184, 0.4);
+    --inset: inset -5px -5px 12px rgba(255, 255, 255, 0.85),
+        inset 5px 5px 12px rgba(159, 168, 184, 0.45);
+    --inset-deep: inset -8px -8px 18px rgba(255, 255, 255, 0.8),
+        inset 8px 8px 20px rgba(151, 161, 178, 0.55);
+
+    --pad-sheen: rgba(255, 255, 255, 0.72);
+    --pad-tint: rgba(122, 135, 166, 0.07);
+    --pad-edge: rgba(255, 255, 255, 0.62);
+    --pad-edge-shadow: inset 1px 1px 3px rgba(159, 168, 184, 0.28);
+    --dot-color: rgba(73, 82, 102, 0.14);
+    --dot-opacity: 0.34;
+
+    --glow: rgba(91, 108, 255, 0.2);
+    --glow-soft: rgba(91, 108, 255, 0.07);
+    --drag-glow: rgba(201, 138, 46, 0.24);
+    --drag-glow-soft: rgba(201, 138, 46, 0.08);
+    --ring-line: rgba(91, 108, 255, 0.16);
+    --dot-ring: rgba(91, 108, 255, 0.1);
+
+    --overlay: rgba(12, 13, 15, 0.62);
+    --overlay-shadow: 0 6px 14px rgba(9, 12, 20, 0.28);
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #20232a;
+    --bg-sheen: #2a2e38;
+    --bg-shade: #171a20;
+    --surface: #24272f;
+    --pad-surface: #282c35;
+    --pad-surface-deep: #22262e;
+
+    --ink: #e8ebf2;
+    --ink-soft: #c6cbd8;
+    --muted: #9aa3b6;
+    --faint: #7c8597;
+    --icon-ink: #aab3c7;
+
+    --accent: #8b9bff;
+    --accent-soft: #2c3350;
+    --green: #55d58c;
+    --green-ink: #7fe0a8;
+    --green-ring: rgba(85, 213, 140, 0.18);
+    --amber: #e2aa55;
+    --amber-ink: #f0c483;
+    --amber-ring: rgba(226, 170, 85, 0.18);
+    --idle-dot: #6f7787;
+    --idle-ring: rgba(111, 119, 135, 0.2);
+
+    --shadow-light: rgba(255, 255, 255, 0.045);
+    --shadow-dark: rgba(0, 0, 0, 0.6);
+    --raised: -6px -6px 14px var(--shadow-light), 7px 7px 16px var(--shadow-dark);
+    --raised-sm: -3px -3px 8px var(--shadow-light), 4px 4px 10px var(--shadow-dark);
+    --inset-sm: inset -2px -2px 5px var(--shadow-light),
+        inset 2px 2px 6px var(--shadow-dark);
+    --inset: inset -4px -4px 10px var(--shadow-light),
+        inset 4px 4px 10px var(--shadow-dark);
+    --inset-deep: inset -7px -7px 16px var(--shadow-light),
+        inset 7px 7px 18px var(--shadow-dark);
+
+    --pad-sheen: rgba(255, 255, 255, 0.045);
+    --pad-tint: rgba(0, 0, 0, 0.22);
+    --pad-edge: rgba(255, 255, 255, 0.035);
+    --pad-edge-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.4);
+    --dot-color: rgba(255, 255, 255, 0.13);
+    --dot-opacity: 0.2;
+
+    --glow: rgba(139, 155, 255, 0.26);
+    --glow-soft: rgba(139, 155, 255, 0.09);
+    --drag-glow: rgba(226, 170, 85, 0.28);
+    --drag-glow-soft: rgba(226, 170, 85, 0.1);
+    --ring-line: rgba(139, 155, 255, 0.2);
+    --dot-ring: rgba(139, 155, 255, 0.12);
+}
+
+html,
+body {
+    height: 100%;
 }
 
 body {
-    margin: 0;
+    display: flex;
+    justify-content: center;
     overflow: hidden;
-    background: var(--paper);
+    overscroll-behavior: none;
+    color: var(--ink);
+    background:
+        radial-gradient(110% 70% at 14% -4%, var(--bg-sheen) 0%, transparent 58%),
+        radial-gradient(100% 80% at 100% 104%, var(--bg-shade) 0%, transparent 62%),
+        var(--bg);
 }
 
-#pad {
-    width: 100%;
-    height: 100vh;
-    height: 100svh;
-    min-height: 440px;
+.app {
     display: flex;
     flex-direction: column;
-    gap: clamp(16px, 3vh, 28px);
-    padding: clamp(20px, 5vw, 42px) clamp(20px, 6vw, 56px) clamp(18px, 4vh, 34px);
-    color: var(--ink);
+    gap: clamp(12px, 2.4vh, 20px);
+    width: 100%;
+    max-width: 540px;
+    height: 100vh;
+    height: 100svh;
+    height: 100dvh;
+    padding:
+        calc(14px + env(safe-area-inset-top))
+        clamp(16px, 4.8vw, 26px)
+        calc(14px + env(safe-area-inset-bottom));
 }
 
-.topbar,
-.brand,
-.guide-heading,
-.gesture-item {
-    display: flex;
-    align-items: center;
-}
+/* ---------- Header ---------- */
 
 .topbar {
-    justify-content: space-between;
+    display: flex;
     flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 2px;
 }
 
 .brand {
-    gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
 }
 
 .brand-mark {
     display: grid;
-    width: 42px;
-    height: 42px;
+    flex: none;
+    width: 40px;
+    height: 40px;
     place-items: center;
-    border: 1px solid #ddd6c9;
-    border-radius: 13px;
+    border-radius: 12px;
     color: var(--accent);
-    background: #faf9f6;
+    background: var(--surface);
+    box-shadow: var(--raised-sm);
 }
 
 .brand-mark svg {
-    width: 21px;
-    height: 21px;
+    width: 20px;
+    height: 20px;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
 .eyebrow {
-    display: block;
     color: var(--muted);
     font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.17em;
+    font-weight: 650;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
 }
 
 h1 {
-    margin: 3px 0 0;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 23px;
-    font-weight: 500;
+    margin-top: 4px;
+    color: var(--ink);
+    font-size: clamp(18px, 5vw, 20px);
+    font-weight: 650;
     letter-spacing: -0.035em;
+    line-height: 1;
 }
 
-.status-badge {
-    display: inline-flex;
+.top-actions {
+    display: flex;
+    flex: none;
     align-items: center;
     gap: 8px;
-    min-height: 34px;
-    padding: 0 12px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.55);
-    color: #6d7475;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.055em;
-    white-space: nowrap;
-    transition: color 0.25s ease, border-color 0.25s ease;
 }
 
-.status-badge::before {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: currentColor;
-    content: "";
-    box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 13%, transparent);
-}
-
-.touch-surface {
+.icon-btn {
     position: relative;
     display: grid;
-    flex: 1 1 auto;
-    min-height: 180px;
-    overflow: hidden;
+    flex: none;
+    width: var(--control);
+    height: var(--control);
+    padding: 0;
     place-items: center;
-    border: 1px solid #343d41;
-    border-radius: 24px;
-    background:
-        radial-gradient(ellipse at 50% 42%, rgba(177, 138, 82, 0.11), transparent 48%),
-        linear-gradient(145deg, #293238, #20282d 72%);
-    box-shadow: 0 18px 38px rgba(38, 42, 43, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    border: 0;
+    border-radius: 50%;
+    color: var(--ink-soft);
+    background: var(--surface);
+    box-shadow: var(--raised-sm);
+    cursor: pointer;
+    transition:
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
 }
 
-.touch-surface::before {
+/* A slightly larger touch target without overlapping the next control. */
+.icon-btn::after {
     position: absolute;
-    inset: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.055);
-    border-radius: 16px;
+    inset: -4px;
     content: "";
 }
 
-.surface-content {
+.icon-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-btn:active {
+    box-shadow: var(--inset-sm);
+    transform: scale(0.97);
+}
+
+.icon-btn:focus-visible,
+.viewer-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.screen-toggle[aria-pressed="true"] {
+    color: var(--accent);
+    box-shadow: var(--inset-sm);
+}
+
+.theme-toggle .icon-sun {
+    display: none;
+}
+
+.theme-toggle .icon-moon {
+    display: block;
+}
+
+:root[data-theme="dark"] .theme-toggle {
+    color: var(--accent);
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-sun {
+    display: block;
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-moon {
+    display: none;
+}
+
+.status {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 7px;
+    height: var(--control);
+    padding: 0 12px;
+    border-radius: 999px;
+    color: var(--ink-soft);
+    background: var(--surface);
+    box-shadow: var(--inset-sm);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--idle-dot);
+    box-shadow: 0 0 0 var(--dot-ring-size) var(--idle-ring);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.status[data-state="connecting"] .status-dot {
+    background: var(--amber);
+    box-shadow: 0 0 0 var(--dot-ring-size) var(--amber-ring);
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+.status[data-state="connected"] {
+    color: var(--green-ink);
+}
+
+.status[data-state="connected"] .status-dot {
+    background: var(--green);
+    box-shadow: 0 0 0 var(--dot-ring-size) var(--green-ring);
+}
+
+.status[data-state="offline"] {
+    color: var(--amber-ink);
+}
+
+.status[data-state="offline"] .status-dot {
+    background: var(--amber);
+    box-shadow: 0 0 0 var(--dot-ring-size) var(--amber-ring);
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+/* ---------- Screen viewer ---------- */
+
+.viewer {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 9px;
+    overflow: hidden;
+    isolation: isolate;
+    contain: layout paint;
+    border: 0;
+    border-radius: 26px;
+    background: var(--surface);
+    box-shadow: var(--raised);
+}
+
+.viewer[hidden] {
+    display: none;
+}
+
+.viewer canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 17px;
+    background: #0b0c0e;
+}
+
+.viewer-top {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    left: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.viewer-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.9);
+    background: var(--overlay);
+    box-shadow: var(--overlay-shadow);
+    font-size: 9.5px;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.viewer-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #b6b2a9;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.viewer[data-state="connecting"] .viewer-dot {
+    background: var(--amber);
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+.viewer[data-state="live"] .viewer-dot {
+    background: #4bd47f;
+    box-shadow: 0 0 0 3px rgba(75, 212, 127, 0.18);
+}
+
+.viewer[data-state="offline"] .viewer-dot {
+    background: var(--amber);
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+.viewer-btn {
+    display: grid;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    color: #f1efe9;
+    background: var(--overlay);
+    box-shadow: var(--overlay-shadow);
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.viewer-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+.viewer-btn .icon-collapse {
+    display: none;
+}
+
+.viewer:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    aspect-ratio: auto;
+    padding: 0;
+    border-radius: 0;
+    background: #000;
+    box-shadow: none;
+}
+
+.viewer:fullscreen canvas {
+    border-radius: 0;
+}
+
+.viewer:fullscreen .viewer-top {
+    top: calc(10px + env(safe-area-inset-top));
+    right: calc(10px + env(safe-area-inset-right));
+    left: calc(10px + env(safe-area-inset-left));
+}
+
+.viewer:fullscreen .viewer-btn .icon-expand {
+    display: none;
+}
+
+.viewer:fullscreen .viewer-btn .icon-collapse {
+    display: block;
+}
+
+body.viewing .guide {
+    display: none;
+}
+
+/* ---------- Touch surface ---------- */
+
+.pad {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    overflow: hidden;
+    isolation: isolate;
+    contain: layout paint;
+    border: 0;
+    border-radius: 36px;
+    background:
+        radial-gradient(120% 78% at 28% -6%, var(--pad-sheen) 0%, transparent 56%),
+        radial-gradient(100% 90% at 88% 108%, var(--pad-tint) 0%, transparent 62%),
+        linear-gradient(165deg, var(--pad-surface) 0%, var(--pad-surface-deep) 100%);
+    box-shadow: var(--raised);
+}
+
+.pad::before {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background-image: radial-gradient(var(--dot-color) 1px, transparent 1.4px);
+    background-size: 24px 24px;
+    content: "";
+    opacity: var(--dot-opacity);
+    -webkit-mask-image: radial-gradient(125% 98% at 50% 42%, #000 12%, transparent 78%);
+    mask-image: radial-gradient(125% 98% at 50% 42%, #000 12%, transparent 78%);
+    pointer-events: none;
+}
+
+.pad::after {
+    position: absolute;
+    z-index: 2;
+    inset: 12px;
+    border: 1px solid var(--pad-edge);
+    border-radius: 26px;
+    box-shadow: var(--pad-edge-shadow);
+    content: "";
+    pointer-events: none;
+}
+
+.pad-glow {
+    position: absolute;
     z-index: 1;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        var(--glow) 0%,
+        var(--glow-soft) 46%,
+        transparent 70%
+    );
+    opacity: 0;
+    transform: translate3d(-400px, -400px, 0) translate(-50%, -50%);
+    transition: opacity 0.28s ease;
+    will-change: transform, opacity;
+    pointer-events: none;
+}
+
+.pad.is-dragging {
+    box-shadow: var(--inset-deep);
+}
+
+.pad.is-dragging .pad-glow {
+    background: radial-gradient(
+        circle,
+        var(--drag-glow) 0%,
+        var(--drag-glow-soft) 46%,
+        transparent 70%
+    );
+}
+
+.pad-hint {
+    z-index: 3;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
 }
 
-.surface-icon {
+.pad.is-used .pad-hint {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s 0.4s;
+}
+
+.pad.is-used .hint-ring::before {
+    animation: none;
+}
+
+.hint-ring {
+    position: relative;
     display: grid;
-    width: 58px;
-    height: 58px;
-    margin-bottom: 22px;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 18px;
     place-items: center;
-    border: 1px solid rgba(207, 175, 124, 0.27);
-    border-radius: 18px;
-    color: #d0b27f;
-    background: rgba(255, 255, 255, 0.035);
+    border: 0;
+    border-radius: 50%;
+    background: var(--surface);
+    box-shadow: var(--inset);
 }
 
-.surface-icon svg {
-    width: 30px;
-    height: 30px;
-}
-
-.surface-label {
-    color: #d0b27f;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-}
-
-.surface-content p {
-    margin: 9px 0 0;
-    color: #aab1b1;
-    font-size: 13px;
-    font-weight: 400;
-}
-
-.surface-corner {
+.hint-ring::before {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    border-color: rgba(208, 178, 127, 0.44);
+    inset: -1px;
+    border: 1px solid var(--ring-line);
+    border-radius: 50%;
+    content: "";
+    animation: breathe 4s ease-in-out infinite;
 }
 
-.corner-top {
-    top: 27px;
-    left: 27px;
-    border-top: 1px solid;
-    border-left: 1px solid;
-    border-top-left-radius: 5px;
+.hint-ring::after {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 6px var(--dot-ring);
+    content: "";
 }
 
-.corner-bottom {
-    right: 27px;
-    bottom: 27px;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
-    border-bottom-right-radius: 5px;
+.hint-title {
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.012em;
 }
 
-.gesture-guide {
+.hint-sub {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.005em;
+}
+
+.pad-tag {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    bottom: 18px;
+    left: 0;
+    color: var(--faint);
+    font-size: 8.5px;
+    font-weight: 650;
+    letter-spacing: 0.22em;
+    text-align: center;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+/* ---------- Gesture guide ---------- */
+
+.guide {
     flex: 0 0 auto;
 }
 
-.guide-heading {
+.guide-head {
+    display: flex;
+    align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 12px;
+    gap: 10px;
+    padding: 0 4px;
+    margin-bottom: 10px;
+}
+
+.guide-title {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
 }
 
 .guide-note {
-    color: #969b99;
+    color: var(--faint);
     font-size: 10px;
+    letter-spacing: 0.005em;
 }
 
-.gesture-list {
+.guide-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    overflow: hidden;
-    border: 1px solid var(--line);
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.55);
+    column-gap: 16px;
+    row-gap: 11px;
 }
 
-.gesture-item {
+.gesture {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     min-width: 0;
-    gap: 11px;
-    padding: 13px 15px;
 }
 
-.gesture-item:nth-child(odd) {
-    border-right: 1px solid var(--line);
+.gesture-icon {
+    display: grid;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border: 0;
+    border-radius: 11px;
+    color: var(--icon-ink);
+    background: var(--surface);
+    box-shadow: var(--raised-sm);
 }
 
-.gesture-item:nth-child(-n + 2) {
-    border-bottom: 1px solid var(--line);
+.gesture-icon svg {
+    width: 16px;
+    height: 16px;
 }
 
-.gesture-number {
-    color: var(--accent);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 15px;
+.gesture-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
 }
 
-.gesture-item strong,
-.gesture-item small {
-    display: block;
-}
-
-.gesture-item strong {
+.gesture-copy strong {
     color: var(--ink);
-    font-size: 11px;
-    font-weight: 650;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+    white-space: nowrap;
 }
 
-.gesture-item small {
-    margin-top: 3px;
+.gesture-copy small {
     overflow: hidden;
     color: var(--muted);
-    font-size: 9px;
+    font-size: 9.5px;
+    letter-spacing: 0.005em;
+    line-height: 1.3;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-@media (max-height: 580px) {
-    #pad {
-        gap: 12px;
-        padding-top: 14px;
-        padding-bottom: 14px;
+/* ---------- Adaptations ---------- */
+
+@media (min-width: 620px) and (min-height: 720px) {
+    body {
+        align-items: center;
     }
 
-    .touch-surface {
-        min-height: 130px;
-    }
-
-    .surface-icon {
-        width: 44px;
-        height: 44px;
-        margin-bottom: 12px;
-    }
-
-    .surface-icon svg {
-        width: 25px;
-        height: 25px;
-    }
-
-    .gesture-item {
-        padding-top: 9px;
-        padding-bottom: 9px;
+    .app {
+        height: min(920px, calc(100dvh - 40px));
     }
 }
 
-@media (max-width: 360px) {
-    #pad {
-        padding-right: 16px;
-        padding-left: 16px;
+@media (orientation: landscape) and (min-width: 700px) {
+    .app {
+        max-width: 760px;
+    }
+}
+
+/* Keep all three header controls comfortable on narrow phones. */
+@media (max-width: 400px) {
+    :root {
+        --control: 32px;
     }
 
-    .gesture-item {
+    .status {
+        gap: 6px;
+        padding: 0 10px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 370px) {
+    .status {
+        width: var(--control);
+        padding: 0;
+        justify-content: center;
+        gap: 0;
+        background: transparent;
+        box-shadow: none;
+        --dot-ring-size: 4px;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    /* Keep the live region for screen readers, hide the label visually. */
+    #status-text {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .guide-grid {
+        column-gap: 10px;
+    }
+
+    .gesture {
         gap: 8px;
-        padding-right: 10px;
-        padding-left: 10px;
     }
 
-    .guide-note {
+    .gesture-icon {
+        width: 27px;
+        height: 27px;
+        border-radius: 10px;
+    }
+
+    .gesture-copy strong {
+        font-size: 11px;
+    }
+
+    .gesture-copy small {
         font-size: 9px;
     }
 }
 
 @media (max-width: 340px) {
-    .status-badge {
-        gap: 6px;
-        padding-right: 8px;
-        padding-left: 8px;
-        font-size: 8px;
+    :root {
+        --control: 30px;
     }
 
     .guide-note {
         display: none;
     }
 
-    .gesture-list {
-        grid-template-columns: 1fr;
+    .brand {
+        gap: 9px;
     }
 
-    .gesture-item:nth-child(odd) {
-        border-right: 0;
+    .brand-mark {
+        width: 36px;
+        height: 36px;
     }
 
-    .gesture-item:not(:last-child) {
-        border-bottom: 1px solid var(--line);
+    .eyebrow {
+        font-size: 8px;
+    }
+
+    h1 {
+        font-size: 17px;
+    }
+
+    .gesture-copy small {
+        display: none;
+    }
+
+    .gesture-icon {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media (max-height: 700px) {
+    .app {
+        gap: 10px;
+        padding-top: calc(10px + env(safe-area-inset-top));
+        padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    }
+
+    .hint-ring {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 13px;
+    }
+
+    .hint-title {
+        font-size: 14px;
+    }
+
+    .guide-note {
+        display: none;
+    }
+
+    .guide-head {
+        margin-bottom: 8px;
+    }
+
+    .guide-grid {
+        row-gap: 9px;
+    }
+
+    .pad-tag {
+        display: none;
+    }
+}
+
+@media (max-height: 540px) {
+    .guide {
+        display: none;
+    }
+
+    .brand-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+    }
+
+    h1 {
+        font-size: 17px;
+    }
+
+    .viewer {
+        border-radius: 22px;
+        padding: 7px;
+    }
+
+    .viewer canvas {
+        border-radius: 15px;
+    }
+
+    .viewer-top {
+        top: 15px;
+        right: 15px;
+        left: 15px;
+    }
+
+    .pad {
+        border-radius: 28px;
+    }
+
+    .pad::after {
+        inset: 10px;
+        border-radius: 20px;
+    }
+
+    .pad-hint {
+        flex-direction: row;
+        gap: 14px;
+    }
+
+    .hint-ring {
+        margin-bottom: 0;
+    }
+
+    .hint-sub {
+        display: none;
+    }
+}
+
+@media (orientation: landscape) {
+    body.viewing .app {
+        display: grid;
+        grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-areas:
+            "head head"
+            "viewer pad";
+        column-gap: clamp(10px, 1.8vw, 16px);
+        row-gap: clamp(8px, 1.6vh, 12px);
+    }
+
+    body.viewing .topbar {
+        grid-area: head;
+    }
+
+    body.viewing .viewer {
+        grid-area: viewer;
+        align-self: start;
+        width: 100%;
+    }
+
+    body.viewing .pad {
+        grid-area: pad;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.45;
+        transform: scale(0.85);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes breathe {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0;
+        transform: scale(1.16);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

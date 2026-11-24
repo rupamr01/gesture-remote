@@ -1,0 +1,4 @@
+websockets>=15
+mss>=10
+Pillow>=10
+pyautogui>=0.9.54; sys_platform != "win32"
